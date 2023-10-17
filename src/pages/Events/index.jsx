@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Modal, Radio } from "antd";
 import DataTable from "../../components/DataTable";
-const CollectionCreateForm = ({ open, onCancel }) => {
+const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
   const [form] = Form.useForm();
-  const [event, setEvent] = useState({});
-  // const [open, setOpen] = useState(open);
-  const [events, setEvents] = useState(localStorage.getItem("events"));
-  const time = new Date();
-  const date = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} ${time.getDate()}/${
-    time.getMonth() + 1
-  }/${time.getFullYear()}`;
-  const onCreate = (values) => {
-    setEvents((pre) => [...pre, event]);
-  };
-  console.log(events);
   return (
     <Modal
       open={open}
-      title="Create a new event"
+      title="Create a new collection"
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
+      okButtonProps={{ className: "bg-primary" }}
       onOk={() => {
         form
           .validateFields()
@@ -44,11 +34,10 @@ const CollectionCreateForm = ({ open, onCancel }) => {
         <Form.Item
           name="name"
           label="Name"
-          onChange={(e) => setEvent(e.target.value)}
           rules={[
             {
               required: true,
-              message: "Please input the title of event!",
+              message: "Please input the title of collection!",
             },
           ]}
         >
@@ -58,35 +47,70 @@ const CollectionCreateForm = ({ open, onCancel }) => {
     </Modal>
   );
 };
+
+const data = [
+  {
+    key: "1",
+    name: "John Brown",
+    age: 32,
+    address: "New York No. 1 Lake Park",
+    tags: ["nice", "developer"],
+  },
+  {
+    key: "2",
+    name: "Jim Green",
+    age: 42,
+    address: "London No. 1 Lake Park",
+    tags: ["loser"],
+  },
+  {
+    key: "3",
+    name: "Joe Black",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+    tags: ["cool", "teacher"],
+  },
+];
 const Event = () => {
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState(
+    JSON.parse(localStorage.getItem("events")) || []
+  );
 
-  useEffect(() => {
-    // localStorage.setItem("events", JSON.stringify(events));
-  }, [event]);
+  const onCreate = (values) => {
+    const eventItem = {
+      id: 1,
+      key: Math.floor(Math.random() * 1000),
+      name: values.name,
+    };
+    console.log(data);
+    setData((prev) => {
+      const newData = [...prev, eventItem];
+      localStorage.setItem("events", JSON.stringify(newData));
+      return newData;
+    });
+    setOpen(false);
+  };
+  useEffect(() => {});
   return (
     <div>
-      <div className="flex justify-end">
-        <Button
-          type="primary"
-          onClick={() => {
-            setOpen(true);
-          }}
-          className="bg-primary mb-8 p-5 leading-normal flex items-center"
-        >
-          New Event
-        </Button>
-        <CollectionCreateForm
-          open={open}
-          // onCreate={onCreate}
-          onCancel={() => {
-            setOpen(false);
-          }}
-        />
-      </div>
-      <div>
-        <DataTable />
-      </div>
+      <Button
+        type="primary"
+        onClick={() => {
+          setOpen(true);
+        }}
+        className="bg-primary"
+      >
+        New Event
+      </Button>
+      <CollectionCreateForm
+        open={open}
+        onCreate={onCreate}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      />
+      <DataTable data={data} />
     </div>
   );
 };
