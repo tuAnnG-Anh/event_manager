@@ -36,24 +36,18 @@ function DefaultLayout({ props, children }) {
           items={[
             {
               key: "1",
-              icon: <HomeOutlined />,
-              label: "Dashboard",
+              icon: <CalendarOutlined />,
+              label: "Events",
               onClick: () => navigate("/"),
             },
             {
               key: "2",
-              icon: <CalendarOutlined />,
-              label: "Events",
-              onClick: () => navigate("/events"),
-            },
-            {
-              key: "3",
               icon: <UserOutlined />,
               label: "Customer",
               onClick: () => navigate("/customer"),
             },
             {
-              key: "4",
+              key: "3",
               icon: <HeatMapOutlined />,
               label: "Checkin manager",
               onClick: () => navigate("/checkin"),

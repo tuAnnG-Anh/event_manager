@@ -1,4 +1,4 @@
 function DashBoard() {
-  return <div>DashBoard</div>;
+  return <div>HOME</div>;
 }
 export default DashBoard;
