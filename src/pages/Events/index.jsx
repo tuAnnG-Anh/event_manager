@@ -57,6 +57,9 @@ const Event = () => {
   const [data, setData] = useState(
     JSON.parse(localStorage.getItem("events")) || []
   );
+  const [userLogged, setUserLogger] = useState(
+    JSON.parse(localStorage.getItem("userLogged")) || []
+  );
   const [dataCustomer, setDataCustomer] = useState(
     JSON.parse(localStorage.getItem("customers")) || []
   );
@@ -150,13 +153,14 @@ const Event = () => {
   };
   const handleCreate = (values) => {
     const timeNow = new Date(Date.now()).toLocaleString().split(",")[0];
+    console.log(userLogged);
     const eventItem = {
       id: 1,
       name: values.name,
       create_at: timeNow,
-      create_by: "Tuan",
+      create_by: userLogged[0].username,
       update_at: timeNow,
-      update_by: "Tuan",
+      update_by: userLogged[0].username,
     };
     if (data.length !== 0) eventItem.id = data[data.length - 1].id + 1;
     setData((prev) => {
@@ -170,7 +174,11 @@ const Event = () => {
     setIsEditing(true);
     setEditingEvent(() => {
       const timeNow = new Date(Date.now()).toLocaleString().split(",")[0];
-      return { ...record, update_at: timeNow };
+      return {
+        ...record,
+        update_at: timeNow,
+        update_by: userLogged[0].username,
+      };
     });
   };
   const resetEditing = () => {
@@ -215,7 +223,6 @@ const Event = () => {
                 return event;
               }
             });
-
             localStorage.setItem("events", JSON.stringify(newData));
             return newData;
           });
@@ -251,7 +258,7 @@ const Event = () => {
                 event_id: checkedEvent.id,
                 customer_id: customer.id,
                 checked_at: timeNow,
-                checked_by: "Tuan",
+                checked_by: userLogged[0].username,
                 created_at: timeNow,
                 updated_at: timeNow,
               };
@@ -261,7 +268,6 @@ const Event = () => {
                 const newData = [...prev, newChecked];
                 localStorage.setItem("checked", JSON.stringify(newData));
                 checkedState = true;
-                alert("Checked!");
                 setPhoneNumber("");
                 setOpenSearch(false);
                 return newData;

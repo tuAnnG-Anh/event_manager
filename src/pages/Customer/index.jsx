@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
-import { Space, Table, Tag, Input, Button } from "antd";
+import { Space, Table, Tag, Input, Button, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import * as XLSX from "xlsx";
@@ -8,6 +9,9 @@ const Customer = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(
     JSON.parse(localStorage.getItem("customers")) || []
+  );
+  const [userLogged, setUserLogged] = useState(
+    JSON.parse(localStorage.getItem("userLogged")) || []
   );
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -166,14 +170,15 @@ const Customer = () => {
     },
   ];
   const updateToLocalStoreage = (parsedData) => {
-    var length = data.length;
     parsedData.map((item) => {
       const timeNow = new Date(Date.now()).toLocaleString().split(",")[0];
-
+      console.log(userLogged);
       const customer = {
         id: 1,
         create_at: timeNow,
         update_at: timeNow,
+        update_by: userLogged[0].username,
+        create_by: userLogged[0].username,
 
         ...item,
       };
@@ -187,11 +192,9 @@ const Customer = () => {
       });
     });
   };
-  const handleUpload = async (e) => {
-    setLoading(true);
+  const handleUpload = (e) => {
     const reader = new FileReader();
-    await reader.readAsBinaryString(e.target.files[0]);
-    setLoading(false);
+    reader.readAsBinaryString(e.target.files[0]);
     reader.onload = (e) => {
       const data = e.target.result;
       const workbook = XLSX.read(data, { type: "binary" });
@@ -203,9 +206,10 @@ const Customer = () => {
   };
   return (
     <>
-      <Button>
-        <input type="file" onChange={(e) => handleUpload(e)} className="" />
-      </Button>
+      {/* <Upload onChange={(e) => handleUploadXlsx(e)}>
+        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+      </Upload> */}
+      <input type="file" onChange={(e) => handleUpload(e)} className="" />
       <Table
         columns={columns}
         rowKey="id"

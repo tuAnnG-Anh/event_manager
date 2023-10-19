@@ -38,7 +38,7 @@ function DefaultLayout({ props, children }) {
               key: "1",
               icon: <CalendarOutlined />,
               label: "Events",
-              onClick: () => navigate("/"),
+              onClick: () => navigate("/events"),
             },
             {
               key: "2",

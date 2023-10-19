@@ -2,16 +2,13 @@ import React, { useState, useRef } from "react";
 import { Space, Table, Tag, Input, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import * as XLSX from "xlsx";
 
 const CheckIn = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(
     JSON.parse(localStorage.getItem("checked")) || []
   );
-  const [dataCustomer, setDataCustomer] = useState(
-    JSON.parse(localStorage.getItem("customer")) || []
-  );
+
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -127,7 +124,6 @@ const CheckIn = () => {
         text
       ),
   });
-  const dataSource = () => {};
   const columns = [
     {
       title: "STT",
@@ -159,42 +155,6 @@ const CheckIn = () => {
       dataIndex: "updated_at",
     },
   ];
-  const updateToLocalStoreage = (parsedData) => {
-    var length = data.length;
-    parsedData.map((item) => {
-      const timeNow = new Date(Date.now()).toLocaleString().split(",")[0];
-
-      const customer = {
-        id: 1,
-        create_at: timeNow,
-        update_at: timeNow,
-
-        ...item,
-      };
-      setData((prev) => {
-        if (prev.length !== 0) {
-          customer.id = prev.length + 1;
-        }
-        const newData = [...prev, customer];
-        localStorage.setItem("customers", JSON.stringify(newData));
-        return newData;
-      });
-    });
-  };
-  const handleUpload = async (e) => {
-    setLoading(true);
-    const reader = new FileReader();
-    await reader.readAsBinaryString(e.target.files[0]);
-    setLoading(false);
-    reader.onload = (e) => {
-      const data = e.target.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData = XLSX.utils.sheet_to_json(sheet);
-      updateToLocalStoreage(parsedData);
-    };
-  };
   return (
     <>
       <Table

@@ -5,15 +5,22 @@ import Customer from "../pages/Customer";
 import CheckIn from "../pages/Checkin";
 import NotFound from "../pages/NotFound";
 import Login from "../pages/Login";
+import Register from "../pages/Register";
 
+const userLogged = JSON.parse(localStorage.getItem("userLogged")) || [];
+console.log(userLogged);
 //Public routes
 const publicRoutes = [
   {
-    path: "/login",
+    path: "/",
     page: Login,
   },
   {
-    path: "/",
+    path: "/register",
+    page: Register,
+  },
+  {
+    path: "/events",
     page: Events,
     layout: DefaultLayout,
   },
