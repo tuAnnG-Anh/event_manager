@@ -30,7 +30,7 @@ const Login = () => {
     JSON.parse(localStorage.getItem("users")) || []
   );
   const onFinish = (values) => {
-    const result = users.filter((user) => user.username === values.username);
+    const result = users.filter((user) => user.username === values.username && user.password === values.password);
     console.log(result);
     if (result.length !== 0) {
       localStorage.setItem("userLogged", JSON.stringify(result));
