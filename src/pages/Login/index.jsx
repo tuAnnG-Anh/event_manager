@@ -114,10 +114,9 @@ const Login = () => {
           >
             <Button type="primary" htmlType="submit" className="bg-primary">
               Login
-            </Button>
-            <a className="ml-4" href="/register">
+            </Button className = "ml-4" onClick={()=> {navigate("/register")}>
               Register
-            </a>
+
           </Form.Item>
         </Form>
       </div>
