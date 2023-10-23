@@ -30,7 +30,10 @@ const Login = () => {
     JSON.parse(localStorage.getItem("users")) || []
   );
   const onFinish = (values) => {
-    const result = users.filter((user) => user.username === values.username && user.password === values.password);
+    const result = users.filter(
+      (user) =>
+        user.username === values.username && user.password === values.password
+    );
     console.log(result);
     if (result.length !== 0) {
       localStorage.setItem("userLogged", JSON.stringify(result));
@@ -114,11 +117,13 @@ const Login = () => {
           >
             <Button type="primary" htmlType="submit" className="bg-primary">
               Login
-            </Button >
-            <Button className = "ml-4" onClick={()=> {navigate("/register")}>
+            </Button>
+            <Button
+              className="outline-none"
+              onClick={() => navigate("/register")}
+            >
               Register
-              </Button>
-
+            </Button>
           </Form.Item>
         </Form>
       </div>
