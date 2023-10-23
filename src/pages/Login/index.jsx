@@ -5,18 +5,22 @@ import { Route, Routes, Outlet } from "react-router";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  localStorage.setItem(
-    "users",
-    JSON.stringify([
-      {
-        id: 1,
-        username: "admin",
-        email: "admin@gmail.com",
-        password: "1",
-        confirm: "1",
-      },
-    ])
+  const [users, setUsers] = useState(
+    JSON.parse(localStorage.getItem("users")) || []
   );
+  if (users.length === 0)
+    localStorage.setItem(
+      "users",
+      JSON.stringify([
+        {
+          id: 1,
+          username: "admin",
+          email: "admin@gmail.com",
+          password: "1",
+          confirm: "1",
+        },
+      ])
+    );
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
   const openNotification = () => {
@@ -26,9 +30,7 @@ const Login = () => {
       duration: 0,
     });
   };
-  const [users, setUsers] = useState(
-    JSON.parse(localStorage.getItem("users")) || []
-  );
+
   const onFinish = (values) => {
     const result = users.filter(
       (user) =>

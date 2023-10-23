@@ -48,6 +48,7 @@ const Register = () => {
     if (data.length !== 0) newUser.id = data[data.length - 1].id + 1;
     setData((prev) => {
       const newData = [...prev, newUser];
+      console.log(newData);
       localStorage.setItem("users", JSON.stringify(newData));
       return newData;
     });

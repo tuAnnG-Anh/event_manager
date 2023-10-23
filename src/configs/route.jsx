@@ -8,7 +8,6 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 
 const userLogged = JSON.parse(localStorage.getItem("userLogged")) || [];
-console.log(userLogged);
 //Public routes
 const publicRoutes = [
   {
