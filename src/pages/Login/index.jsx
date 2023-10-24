@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Form, Input, notification } from "antd";
 import Title from "antd/es/typography/Title";
-import { Route, Routes, Outlet } from "react-router";
 import { useNavigate } from "react-router-dom";
-
+import { Spin, message } from "antd";
+import { WarningFilled, CheckCircleFilled } from "@ant-design/icons";
 const Login = () => {
   const [users, setUsers] = useState(
     JSON.parse(localStorage.getItem("users")) || [
@@ -16,40 +16,35 @@ const Login = () => {
       },
     ]
   );
-  if (users.length === 0)
-    localStorage.setItem(
-      "users",
-      JSON.stringify([
-        {
-          id: 1,
-          username: "admin",
-          email: "admin@gmail.com",
-          password: "1",
-          confirm: "1",
-        },
-      ])
-    );
+
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
-  const openNotification = () => {
+  const openNotificationError = () => {
     api.open({
       message: "Login fail!",
       description: "Username or password incorrect!",
       duration: 0,
+      icon: <WarningFilled className="text-red-500" />,
     });
   };
-
+  const openNotificationSuccess = () => {
+    api.open({
+      message: "Login success!",
+      duration: 0,
+      icon: <CheckCircleFilled className="text-green-500" />,
+    });
+  };
   const onFinish = (values) => {
     const result = users.filter(
       (user) =>
         user.username === values.username && user.password === values.password
     );
-    console.log(result);
     if (result.length !== 0) {
+      openNotificationSuccess();
       localStorage.setItem("userLogged", JSON.stringify(result));
-      navigate("events");
+      setTimeout(() => navigate("/events"), 1000);
     } else {
-      openNotification();
+      openNotificationError();
     }
   };
 
@@ -128,8 +123,9 @@ const Login = () => {
             <Button type="primary" htmlType="submit" className="bg-primary">
               Login
             </Button>
+
             <Button
-              className="outline-none"
+              className="outline-none border-none text-primary ml-4 shadow-none"
               onClick={() => navigate("/register")}
             >
               Register

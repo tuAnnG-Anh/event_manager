@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Radio, Space, Table, Modal } from "antd";
+import { Button, Form, Input, Radio, Space, Table, Modal, message } from "antd";
 import {
   CheckCircleOutlined,
   DeleteOutlined,
@@ -52,10 +52,49 @@ const EventCreateForm = ({ open, onCreate, onCancel }) => {
     </Modal>
   );
 };
+function isValid(p) {
+  var phoneRe =
+    /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+  var digits = p.replace(/\D/g, "");
+  return phoneRe.test(digits);
+}
 const Event = () => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("events")) || []
+    JSON.parse(localStorage.getItem("events")) || [
+      {
+        id: 1,
+        name: "Women Day",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+      {
+        id: 2,
+        name: "Tet holiday",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+      {
+        id: 4,
+        name: "30/4",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+      {
+        id: 5,
+        name: "2/9",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+    ]
   );
   const [userLogged, setUserLogger] = useState(
     JSON.parse(localStorage.getItem("userLogged")) || []
@@ -140,6 +179,7 @@ const Event = () => {
         setData((pre) => {
           const newData = pre.filter((event) => event.id !== record.id);
           localStorage.setItem("events", JSON.stringify(newData));
+          message.success("Deleted!");
           return newData;
         });
       },
@@ -166,6 +206,7 @@ const Event = () => {
     setData((prev) => {
       const newData = [...prev, eventItem];
       localStorage.setItem("events", JSON.stringify(newData));
+      message.success("Create success!");
       return newData;
     });
     setOpen(false);
@@ -224,6 +265,8 @@ const Event = () => {
               }
             });
             localStorage.setItem("events", JSON.stringify(newData));
+            message.success("Updated!");
+
             return newData;
           });
           resetEditing();
@@ -247,6 +290,9 @@ const Event = () => {
           setOpenSearch(false);
         }}
         onOk={() => {
+          if (!isValid(phoneNumber)) {
+            return message.error("This phone number is not valid!");
+          }
           var checkedState = false;
           dataCustomer.map((customer) => {
             if (customer.phone == phoneNumber) {
@@ -267,6 +313,7 @@ const Event = () => {
               setDataChecked((prev) => {
                 const newData = [...prev, newChecked];
                 localStorage.setItem("checked", JSON.stringify(newData));
+                message.success("Checked!");
                 checkedState = true;
                 setPhoneNumber("");
                 setOpenSearch(false);
@@ -274,7 +321,7 @@ const Event = () => {
               });
             }
           });
-          if (!checkedState) alert("Error");
+          if (!checkedState) message.error("This number phone is not defind!");
         }}
       >
         <Input

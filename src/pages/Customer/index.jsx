@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Space, Table, Tag, Input, Button, Upload } from "antd";
+import { Space, Table, Tag, Input, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
@@ -8,7 +8,58 @@ import * as XLSX from "xlsx";
 const Customer = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("customers")) || []
+    JSON.parse(localStorage.getItem("customers")) || [
+      {
+        id: 1,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Tuan",
+        phone: "0564243269",
+        address: "Ha Noi",
+      },
+      {
+        id: 2,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Son ",
+        phone: "0863058308",
+        address: "Ha Noi",
+      },
+      {
+        id: 3,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Sy",
+        phone: "0531816432",
+        address: "Ha Noi",
+      },
+      {
+        id: 4,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Huong",
+        phone: "0884136980",
+        address: "Ha Noi",
+      },
+      {
+        id: 5,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Huynh",
+        phone: "0586935079",
+        address: "Ha Noi",
+      },
+    ]
   );
   const [userLogged, setUserLogged] = useState(
     JSON.parse(localStorage.getItem("userLogged")) || []
@@ -172,7 +223,6 @@ const Customer = () => {
   const updateToLocalStoreage = (parsedData) => {
     parsedData.map((item) => {
       const timeNow = new Date(Date.now()).toLocaleString().split(",")[0];
-      console.log(userLogged);
       const customer = {
         id: 1,
         create_at: timeNow,
@@ -193,16 +243,21 @@ const Customer = () => {
     });
   };
   const handleUpload = (e) => {
-    const reader = new FileReader();
-    reader.readAsBinaryString(e.target.files[0]);
-    reader.onload = (e) => {
-      const data = e.target.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData = XLSX.utils.sheet_to_json(sheet);
-      updateToLocalStoreage(parsedData);
-    };
+    try {
+      const reader = new FileReader();
+      reader.readAsBinaryString(e.target.files[0]);
+      reader.onload = (e) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const parsedData = XLSX.utils.sheet_to_json(sheet);
+        updateToLocalStoreage(parsedData);
+        message.success("Import success!");
+      };
+    } catch (err) {
+      message.error("Import fail!");
+    }
   };
   return (
     <>

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, Select } from "antd";
+import { Button, Checkbox, Form, Input, Select, message } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const { Option } = Select;
@@ -40,7 +40,8 @@ const Register = () => {
   );
   const navigate = useNavigate();
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    const checkUser = data.filter((user) => (user.email = values.email));
+    if (checkUser) return message.error("This email is already!");
     const newUser = {
       id: 1,
       ...values,
@@ -50,6 +51,7 @@ const Register = () => {
       const newData = [...prev, newUser];
       console.log(newData);
       localStorage.setItem("users", JSON.stringify(newData));
+      message.success("Register success!");
       return newData;
     });
     navigate("/");
