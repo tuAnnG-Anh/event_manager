@@ -6,7 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [users, setUsers] = useState(
-    JSON.parse(localStorage.getItem("users")) || []
+    JSON.parse(localStorage.getItem("users")) || [
+      {
+        id: 1,
+        username: "admin",
+        email: "admin@gmail.com",
+        password: "1",
+        confirm: "1",
+      },
+    ]
   );
   if (users.length === 0)
     localStorage.setItem(
