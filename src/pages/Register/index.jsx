@@ -40,8 +40,8 @@ const Register = () => {
   );
   const navigate = useNavigate();
   const onFinish = (values) => {
-    const checkUser = data.filter((user) => (user.email = values.email));
-    if (checkUser) return message.error("This email is already!");
+    const checkUser = data.filter((user) => user.email === values.email);
+    if (checkUser.length) return message.error("This email is already!");
     const newUser = {
       id: 1,
       ...values,
