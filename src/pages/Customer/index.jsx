@@ -244,6 +244,8 @@ const Customer = () => {
   };
   const handleUpload = (e) => {
     try {
+      if (!e.target.value.includes(".xlsx"))
+        return message.error("Please import file xlsx!");
       const reader = new FileReader();
       reader.readAsBinaryString(e.target.files[0]);
       reader.onload = (e) => {
