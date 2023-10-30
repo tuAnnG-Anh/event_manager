@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
-import { Space, Table, Tag, Input, Button, Upload, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { SearchOutlined } from "@ant-design/icons";
+import { Space, Table, Tag, Input, Button, Upload, message, Modal } from "antd";
+import { SearchOutlined, DownloadOutlined } from "@ant-design/icons";
+import {} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import * as XLSX from "xlsx";
-
 const Customer = () => {
   const [loading, setLoading] = useState(false);
+  const [parsedData, setParsedData] = useState();
   const [data, setData] = useState(
     JSON.parse(localStorage.getItem("customers")) || [
       {
@@ -61,9 +61,29 @@ const Customer = () => {
       },
     ]
   );
+  const headerXlsxFile = [
+    {
+      name: "sample",
+      phone: "0999999999",
+      address: "Viet Nam",
+      note: "Note",
+    },
+  ];
   const [userLogged, setUserLogged] = useState(
     JSON.parse(localStorage.getItem("userLogged")) || []
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    updateToLocalStoreage(parsedData);
+
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -241,12 +261,14 @@ const Customer = () => {
         return newData;
       });
     });
+    message.success("Import success!");
   };
   const handleUpload = (e) => {
     try {
       if (!e.target.value.includes(".xlsx"))
         return message.error("Please import file xlsx!");
       const reader = new FileReader();
+      console.log(e.target);
       reader.readAsBinaryString(e.target.files[0]);
       reader.onload = (e) => {
         const data = e.target.result;
@@ -254,27 +276,44 @@ const Customer = () => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const parsedData = XLSX.utils.sheet_to_json(sheet);
-        updateToLocalStoreage(parsedData);
-        message.success("Import success!");
+        setParsedData(parsedData);
       };
     } catch (err) {
       message.error("Import fail!");
     }
   };
+  const createFile = () => {
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.json_to_sheet(headerXlsxFile);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "sample");
+    XLSX.writeFile(workbook, "sample.xlsx");
+  };
   return (
-    <>
-      {/* <Upload onChange={(e) => handleUploadXlsx(e)}>
-        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-      </Upload> */}
-      <input type="file" onChange={(e) => handleUpload(e)} className="" />
+    <div className="">
+      <form className="flex  flex-col gap-2 mb-4">
+        <input
+          type="file"
+          name="file-input"
+          onChange={(e) => handleUpload(e)}
+          accept=".xlsx"
+          id="file-input"
+          class="block text-gray-500  file:mr-4 file:py-[0.375rem] file:px-4 file:rounded-[6px] file:border-0 file:bg-primary file:text-white hover:file:opacity-80 cursor-pointer"
+        />
+        <span>Or</span>
+        <div>
+          <Button type="primary" onClick={createFile} className="bg-primary ">
+            Download file sample
+          </Button>
+        </div>
+      </form>
+
       <Table
         columns={columns}
         rowKey="id"
         dataSource={data}
         loading={loading}
       />
-      ;
-    </>
+    </div>
   );
 };
 export default Customer;
