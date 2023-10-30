@@ -1,6 +1,10 @@
 import React, { useState, useRef } from "react";
 import { Space, Table, Tag, Input, Button, Upload, message, Modal } from "antd";
-import { SearchOutlined, DownloadOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  DownloadOutlined,
+  ImportOutlined,
+} from "@ant-design/icons";
 import {} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import * as XLSX from "xlsx";
@@ -290,23 +294,66 @@ const Customer = () => {
   };
   return (
     <div className="">
-      <form className="flex  flex-col gap-2 mb-4">
-        <input
-          type="file"
-          name="file-input"
-          onChange={(e) => handleUpload(e)}
-          accept=".xlsx"
-          id="file-input"
-          class="block text-gray-500  file:mr-4 file:py-[0.375rem] file:px-4 file:rounded-[6px] file:border-0 file:bg-primary file:text-white hover:file:opacity-80 cursor-pointer"
-        />
-        <span>Or</span>
-        <div>
-          <Button type="primary" onClick={createFile} className="bg-primary ">
-            Download file sample
-          </Button>
+      <Button
+        type="primary"
+        onClick={showModal}
+        icon={<ImportOutlined />}
+        className="bg-primary mb-4"
+      >
+        Import customer
+      </Button>
+      <Modal
+        title="Upload file excel"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okButtonProps={{ className: "bg-primary" }}
+        width={800}
+      >
+        <div className="flex justify-center gap-6 items-center flex-col bg-stone-100 py-4  border-dashed border-2 border-black-100 rounded">
+          <div className="flex items-center flex-col">
+            <ImportOutlined className="text-3xl text-blue-600" />
+            <h2 className="font-bold text-xl">
+              Choose the file to be imported
+            </h2>
+            <span>{}</span>
+            <span className="opacity-80 text-lg">
+              {"{"}
+              Only.xlsx file format is supported
+              {"}"}
+            </span>
+            {/* <span className="opacity-80 text-lg">
+              Maximum upload file size is 5mb
+            </span> */}
+          </div>
+          <div className="">
+            <label
+              id="file-input-label"
+              for="file-input"
+              className="bg-emerald-600 text-white text-xl m-auto w-36 block text-center rounded py-2 cursor-pointer"
+            >
+              Upload file
+            </label>
+            <input
+              type="file"
+              name="file-input"
+              onChange={(e) => handleUpload(e)}
+              accept=".xlsx"
+              id="file-input"
+              class="block file:hidden text-center"
+            />
+          </div>
+          <div>
+            <button
+              type="primary"
+              onClick={createFile}
+              className="text-primary text-lg"
+            >
+              Download sample file for import
+            </button>
+          </div>
         </div>
-      </form>
-
+      </Modal>
       <Table
         columns={columns}
         rowKey="id"
