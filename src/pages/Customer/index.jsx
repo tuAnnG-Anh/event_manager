@@ -12,58 +12,7 @@ const Customer = () => {
   const [loading, setLoading] = useState(false);
   const [parsedData, setParsedData] = useState();
   const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("customers")) || [
-      {
-        id: 1,
-        create_at: "10/24/2023",
-        update_at: "10/24/2023",
-        update_by: "admin",
-        create_by: "admin",
-        name: "Tuan",
-        phone: "0564243269",
-        address: "Ha Noi",
-      },
-      {
-        id: 2,
-        create_at: "10/24/2023",
-        update_at: "10/24/2023",
-        update_by: "admin",
-        create_by: "admin",
-        name: "Son ",
-        phone: "0863058308",
-        address: "Ha Noi",
-      },
-      {
-        id: 3,
-        create_at: "10/24/2023",
-        update_at: "10/24/2023",
-        update_by: "admin",
-        create_by: "admin",
-        name: "Sy",
-        phone: "0531816432",
-        address: "Ha Noi",
-      },
-      {
-        id: 4,
-        create_at: "10/24/2023",
-        update_at: "10/24/2023",
-        update_by: "admin",
-        create_by: "admin",
-        name: "Huong",
-        phone: "0884136980",
-        address: "Ha Noi",
-      },
-      {
-        id: 5,
-        create_at: "10/24/2023",
-        update_at: "10/24/2023",
-        update_by: "admin",
-        create_by: "admin",
-        name: "Huynh",
-        phone: "0586935079",
-        address: "Ha Noi",
-      },
-    ]
+    JSON.parse(localStorage.getItem("customers")) || []
   );
   const headerXlsxFile = [
     {
