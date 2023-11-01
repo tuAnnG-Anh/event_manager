@@ -278,16 +278,19 @@ const Customer = () => {
     XLSX.writeFile(workbook, "sample.xlsx");
   };
   const props = {
-    // name: "file",
+    name: "file",
     action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
     headers: {
       authorization: "authorization-text",
     },
-    accept: ".xlsx",
+    // accept: ".xlsx",
     maxCount: 1,
     className: "flex flex-col justify-center items-center",
     onChange(info) {
       console.log(info.file);
+      if (info.file.status === "error") {
+        return message.error(`${info.file.name} file upload failed.`);
+      }
       if (info.file.status === "removed") return setParsedData([]);
       if (info.file.status !== "uploading") {
         const reader = new FileReader();
@@ -303,8 +306,6 @@ const Customer = () => {
       }
       if (info.file.status === "done") {
         message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
       }
     },
   };
