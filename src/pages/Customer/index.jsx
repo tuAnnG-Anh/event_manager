@@ -274,11 +274,11 @@ const Customer = () => {
   const createFile = () => {
     var workbook = XLSX.utils.book_new();
     var worksheet = XLSX.utils.json_to_sheet(headerXlsxFile);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "sample");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "sheet1");
     XLSX.writeFile(workbook, "sample.xlsx");
   };
   const props = {
-    name: "file",
+    // name: "file",
     action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
     headers: {
       authorization: "authorization-text",
@@ -289,7 +289,6 @@ const Customer = () => {
     onChange(info) {
       console.log(info.file);
       if (info.file.status === "removed") return setParsedData([]);
-
       if (info.file.status !== "uploading") {
         const reader = new FileReader();
         reader.readAsBinaryString(info.file.originFileObj);
