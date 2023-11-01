@@ -96,6 +96,43 @@ const Event = () => {
       },
     ]
   );
+  localStorage.setItem(
+    "events",
+    JSON.stringify([
+      {
+        id: 1,
+        name: "Women Day",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+      {
+        id: 2,
+        name: "Tet holiday",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+      {
+        id: 4,
+        name: "30/4",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+      {
+        id: 5,
+        name: "2/9",
+        create_at: "10/24/2023",
+        create_by: "admin",
+        update_at: "10/24/2023",
+        update_by: "admin",
+      },
+    ])
+  );
   const [userLogged, setUserLogger] = useState(
     JSON.parse(localStorage.getItem("userLogged")) || []
   );

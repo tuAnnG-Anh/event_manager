@@ -4,15 +4,67 @@ import {
   SearchOutlined,
   DownloadOutlined,
   ImportOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import {} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import * as XLSX from "xlsx";
 const Customer = () => {
   const [loading, setLoading] = useState(false);
-  const [parsedData, setParsedData] = useState();
+  const [parsedData, setParsedData] = useState([]);
   const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("customers")) || []
+    JSON.parse(localStorage.getItem("customers")) || [
+      {
+        id: 1,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Tuan",
+        phone: "0564243269",
+        address: "Ha Noi",
+      },
+      {
+        id: 2,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Son ",
+        phone: "0863058308",
+        address: "Ha Noi",
+      },
+      {
+        id: 3,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Sy",
+        phone: "0531816432",
+        address: "Ha Noi",
+      },
+      {
+        id: 4,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Huong",
+        phone: "0884136980",
+        address: "Ha Noi",
+      },
+      {
+        id: 5,
+        create_at: "10/24/2023",
+        update_at: "10/24/2023",
+        update_by: "admin",
+        create_by: "admin",
+        name: "Huynh",
+        phone: "0586935079",
+        address: "Ha Noi",
+      },
+    ]
   );
   const headerXlsxFile = [
     {
@@ -30,12 +82,15 @@ const Customer = () => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
+    console.log(parsedData);
+    if (parsedData.length === 0) return message.error("Please import data!");
     updateToLocalStoreage(parsedData);
-
     setIsModalOpen(false);
+    setParsedData([]);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+    setParsedData([]);
   };
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -202,7 +257,6 @@ const Customer = () => {
         update_at: timeNow,
         update_by: userLogged[0].username,
         create_by: userLogged[0].username,
-
         ...item,
       };
       setData((prev) => {
@@ -216,30 +270,44 @@ const Customer = () => {
     });
     message.success("Import success!");
   };
-  const handleUpload = (e) => {
-    try {
-      if (!e.target.value.includes(".xlsx"))
-        return message.error("Please import file xlsx!");
-      const reader = new FileReader();
-      console.log(e.target);
-      reader.readAsBinaryString(e.target.files[0]);
-      reader.onload = (e) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "binary" });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const parsedData = XLSX.utils.sheet_to_json(sheet);
-        setParsedData(parsedData);
-      };
-    } catch (err) {
-      message.error("Import fail!");
-    }
-  };
+
   const createFile = () => {
     var workbook = XLSX.utils.book_new();
     var worksheet = XLSX.utils.json_to_sheet(headerXlsxFile);
     XLSX.utils.book_append_sheet(workbook, worksheet, "sample");
     XLSX.writeFile(workbook, "sample.xlsx");
+  };
+  const props = {
+    name: "file",
+    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
+    headers: {
+      authorization: "authorization-text",
+    },
+    accept: ".xlsx",
+    maxCount: 1,
+    className: "flex flex-col justify-center items-center",
+    onChange(info) {
+      console.log(info.file);
+      if (info.file.status === "removed") return setParsedData([]);
+
+      if (info.file.status !== "uploading") {
+        const reader = new FileReader();
+        reader.readAsBinaryString(info.file.originFileObj);
+        reader.onload = (e) => {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "binary" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const parsedData = XLSX.utils.sheet_to_json(sheet);
+          setParsedData(parsedData);
+        };
+      }
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
   };
   return (
     <div className="">
@@ -271,33 +339,18 @@ const Customer = () => {
               Only.xlsx file format is supported
               {"}"}
             </span>
-            {/* <span className="opacity-80 text-lg">
-              Maximum upload file size is 5mb
-            </span> */}
           </div>
-          <div className="">
-            <label
-              id="file-input-label"
-              for="file-input"
-              className="bg-emerald-600 text-white text-xl m-auto w-36 block text-center rounded py-2 cursor-pointer"
+          <Upload {...props}>
+            <Button
+              icon={<UploadOutlined />}
+              type="text"
+              className="bg-emerald-600 text-xl text-white p-4 h-full hover:!bg-emerald-700 hover:!text-white"
             >
-              Upload file
-            </label>
-            <input
-              type="file"
-              name="file-input"
-              onChange={(e) => handleUpload(e)}
-              accept=".xlsx"
-              id="file-input"
-              class="block file:hidden text-center"
-            />
-          </div>
+              Click to Upload
+            </Button>
+          </Upload>
           <div>
-            <button
-              type="primary"
-              onClick={createFile}
-              className="text-primary text-lg"
-            >
+            <button onClick={createFile} className="text-primary text-lg">
               Download sample file for import
             </button>
           </div>
